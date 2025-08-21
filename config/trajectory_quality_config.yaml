@@ -1,0 +1,126 @@
+# Trajectory Quality Assessment Configuration
+# This file configures which metrics to run and their parameters
+
+general:
+  # Output directory for results
+  output_dir: "trajectory_quality_output"
+  
+  # Report formats to generate
+  report_format: ["html", "pdf"]
+  
+  # Logging level
+  log_level: "INFO"
+  
+  # Plot formats
+  plot_format: "png"
+
+metrics:
+  # 1. Structural Stability Analysis
+  structural_stability:
+    rmsd:
+      enabled: true
+      parameters:
+        reference_frame: 0
+        selection: "protein and name CA"
+    
+    rmsf:
+      enabled: true
+      parameters:
+        selection: "protein and name CA"
+  
+  # 2. Energy Analysis
+  energy_analysis:
+    total_energy:
+      enabled: true
+      parameters:
+        energy_file: null  # Path to energy file (.xvg, .edr)
+        energy_columns: ["Potential", "Kinetic", "Total"]
+    
+    temperature_pressure:
+      enabled: true
+      parameters:
+        energy_file: null  # Path to energy file with T/P data
+  
+  # 3. Binding State Analysis
+  binding_analysis:
+    contact_area:
+      enabled: true
+      parameters:
+        selection1: "protein"
+        selection2: "protein"
+        cutoff_distance: 5.0
+    
+    contact_energy:
+      enabled: true
+      parameters:
+        selection1: "protein"
+        selection2: "protein"
+        energy_file: null  # Path to interaction energy file
+  
+  # 4. Convergence Analysis
+  convergence_analysis:
+    rmsd_convergence:
+      enabled: true
+      parameters:
+        selection: "protein and name CA"
+        convergence_threshold: 0.5
+    
+    trajectory_clustering:
+      enabled: true
+      parameters:
+        n_clusters: 5
+        clustering_method: "kmeans"
+        selection: "protein and name CA"
+  
+  # 5. Physical Rationality Analysis
+  physical_rationality:
+    atomic_displacement:
+      enabled: true
+      parameters:
+        selection: "protein"
+        max_displacement: 10.0  # Angstroms
+    
+    bond_geometry:
+      enabled: true
+      parameters:
+        bond_length_tolerance: 0.1  # Angstroms
+        bond_angle_tolerance: 5.0   # Degrees
+  
+  # 6. Binding Region Analysis
+  binding_region_analysis:
+    binding_region_rmsf:
+      enabled: true
+      parameters:
+        binding_site_selection: "protein and (resid 20:30 or resid 50:60)"
+        analysis_radius: 10.0  # Angstroms
+    
+    binding_region_contact:
+      enabled: true
+      parameters:
+        binding_site_selection: "protein and (resid 20:30 or resid 50:60)"
+        contact_cutoff: 5.0
+        analysis_radius: 10.0
+
+# Advanced settings
+advanced:
+  # Frame sampling (analyze every Nth frame)
+  frame_sampling: 1
+  
+  # Parallel processing
+  n_jobs: 1
+  
+  # Memory management
+  chunk_size: 1000
+  
+  # Analysis quality settings
+  analysis_quality:
+    # Minimum frames for convergence analysis
+    min_frames_convergence: 100
+    
+    # RMSD convergence criteria
+    rmsd_convergence_window: 50
+    rmsd_convergence_threshold: 0.5
+    
+    # Clustering quality
+    min_cluster_size: 10
+    silhouette_threshold: 0.3 
